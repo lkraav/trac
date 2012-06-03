@@ -297,13 +297,13 @@ label.disabled { color: #d7d7d7 }
 #help hr { display: none }
 
 /* Section folding */
-.foldable :link, .foldable :visited {
+.foldable :first-child:link, .foldable :first-child:visited {
  background: url(../expanded.png) 0 50% no-repeat;
  border: none;
  padding-left: 16px;
 }
 .foldable :link:hover, .foldable :visited:hover { background-color: transparent }
-.collapsed > .foldable :link, .collapsed > .foldable :visited {
+.collapsed > .foldable :first-child:link, .collapsed > .foldable :first-child:visited {
  background-image: url(../collapsed.png);
 }
 .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { display: none }
