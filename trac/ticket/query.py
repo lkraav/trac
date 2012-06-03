@@ -1099,7 +1099,7 @@ class QueryModule(Component):
         req.session['query_time'] = to_timestamp(orig_time)
         req.session['query_tickets'] = ' '.join([str(t['id'])
                                                  for t in tickets])
-        title = _('Custom Query')
+        title = _('Build Custom Query')
 
         # Only interact with the report module if it is actually enabled.
         #
