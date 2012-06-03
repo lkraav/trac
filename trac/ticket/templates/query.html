@@ -38,7 +38,10 @@
   <body>
     <div id="content" class="query">
       <div id="querypanel-header">
-      <h1 class="foldable">$title <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', query.num_items)})</span></h1>
+      <h1 class="foldable">
+          <a href="#">$title <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', query.num_items)})</span></a>
+          <a py:if="has_alt_query" class="altquery" href="${href.query()}">$alt_query_label</a>
+      </h1>
       <div id="querypanel">
 
       <div py:if="description" id="description" xml:space="preserve">
