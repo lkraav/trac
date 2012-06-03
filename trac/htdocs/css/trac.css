@@ -388,7 +388,7 @@ div.trac-content {
 #help hr { display: none }
 
 /* Section folding */
-.foldable :link, .foldable :visited {
+.foldable :first-child:link, .foldable :first-child:visited {
  background: url(../expanded.png) 4px 50% no-repeat;
  border: none;
  border-radius: .3em;
@@ -398,7 +398,7 @@ div.trac-content {
  padding: .3em .5em .3em 20px;
 }
 .foldable :link:hover, .foldable :visited:hover { background-color: transparent }
-.collapsed > .foldable :link, .collapsed > .foldable :visited {
+.collapsed > .foldable :first-child:link, .collapsed > .foldable :first-child:visited {
  background-image: url(../collapsed.png);
 }
 .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { display: none }
