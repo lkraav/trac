@@ -1136,7 +1136,14 @@ class QueryModule(Component):
         data['title'] = title
 
         data['has_alt_query'] = bool(self.alt_query or self.alt_anonymous_query)
-        data['alt_query_label'] = self.alt_query_label
+
+        if data['has_alt_query']:
+            data['alt_query'] = self.alt_anonymous_query
+            if req.authname and req.authname != 'anonymous':
+                data['alt_query'] = self.alt_query
+            if data['alt_query'] == ( "?" + req.query_string ):
+                data['alt_query_active'] = "active"
+            data['alt_query_label'] = self.alt_query_label
 
         data['all_columns'] = query.get_all_columns()
         # Don't allow the user to remove the id column
