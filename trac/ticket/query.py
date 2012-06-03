@@ -841,6 +841,31 @@ class QueryModule(Component):
             [TracQuery#UsingTracLinks Trac links].
             (''since 0.11.2'')""")
 
+    alt_query = Option('query', 'alt_query',
+        default=False,
+        doc="""The main alternative query for authenticated users. This can
+            be used for quick switching between for example some default and
+            component-grouped view. The query is either in
+            [TracQuery#QueryLanguage query language] syntax, or a URL query
+            string starting with `?` as used in `query:`
+            [TracQuery#UsingTracLinks Trac links].
+            (''since 0.12.4'')""") 
+    
+    alt_anonymous_query = Option('query', 'alt_anonymous_query',
+        default=False,
+        doc="""The main alternative query for anonymous users. This can be
+            used for quick switching between for example some default and
+            component-grouped view. The query is either in
+            [TracQuery#QueryLanguage query language] syntax, or a URL query
+            string starting with `?` as used in `query:`
+            [TracQuery#UsingTracLinks Trac links].
+            (''since 0.12.4'')""") 
+
+    alt_query_label = Option('query', 'alt_query_label',
+        default=_('Show Grouped by Component'), 
+        doc="""Label to use on the link to the alternative query.
+            (''since 0.12.4'')""") 
+
     items_per_page = IntOption('query', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket queries,
         by default (''since 0.11'')""")
@@ -1121,6 +1146,9 @@ class QueryModule(Component):
         data.setdefault('report', None)
         data.setdefault('description', None)
         data['title'] = title
+
+        data['has_alt_query'] = bool(self.alt_query or self.alt_anonymous_query)
+        data['alt_query_label'] = self.alt_query_label
 
         data['all_columns'] = query.get_all_columns()
         # Don't allow the user to remove the id column

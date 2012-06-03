@@ -84,6 +84,8 @@ h2.report-result {
 #content.report .field { margin: 1em 0; }
 #content.report .field label { padding-bottom: .3em; }
 
+#content.query .altquery { margin-left: 1em; }
+
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select {
  font-size: 11px;
