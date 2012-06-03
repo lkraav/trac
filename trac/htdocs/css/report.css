@@ -28,6 +28,7 @@ h2.report-result {
 #content.report .field label { padding-bottom: .3em; }
 
 #content.query .altquery { margin-left: 1em; }
+#content.query .altquery.active { background-color: black; color: rgb( 238,238,238 ); }
 
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
