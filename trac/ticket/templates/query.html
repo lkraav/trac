@@ -17,8 +17,8 @@
       </py:if>
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
-          $("div h1.foldable").enableFolding(false);
         }).change();
+        $("h1.foldable").enableFolding(false);
         $("fieldset legend.foldable").enableFolding(false);
       /*<![CDATA[*/
         /* Hide the filters for saved queries. */
