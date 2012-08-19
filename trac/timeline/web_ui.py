@@ -39,6 +39,8 @@ from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
                             
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import concat_path_query_fragment, \
+                                split_url_into_path_query_fragment
 
 
 class TimelineModule(Component):
@@ -74,7 +76,7 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if 'TIMELINE_VIEW' in req.perm:
             yield ('mainnav', 'timeline',
-                   tag.a(_('Timeline'), href=req.href.timeline(), accesskey=2))
+                   tag.a(_("Timeline"), href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 
@@ -290,8 +292,9 @@ class TimelineModule(Component):
 
     def get_link_resolvers(self):
         def link_resolver(formatter, ns, target, label):
+            path, query, fragment = split_url_into_path_query_fragment(target)
             precision = None
-            time = target.split("T", 1)
+            time = path.split("T", 1)
             if len(time) > 1:
                 time = time[1].split("Z")[0]
                 if len(time) >= 6:
@@ -302,8 +305,8 @@ class TimelineModule(Component):
                     precision = 'hours'
             try:
                 return self.get_timeline_link(formatter.req,
-                                              parse_date(target, utc),
-                                              label, precision)
+                                              parse_date(path, utc),
+                                              label, precision, query, fragment)
             except TracError, e:
                 return tag.a(label, title=to_unicode(e.message),
                              class_='timeline missing')
