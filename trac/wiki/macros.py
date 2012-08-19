@@ -26,9 +26,9 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, ResourceNotFound, get_resource_name, \
                           get_resource_summary, get_resource_url
-from trac.util.compat import any, rpartition
-from trac.util.datefmt import format_date, from_utimestamp
-from trac.util.html import escape, find_element
+from trac.util.compat import cleandoc
+from trac.util.datefmt import format_date, from_utimestamp, user_time
+from trac.util.html import escape
 from trac.util.presentation import separated
 from trac.util.text import unicode_quote, to_unicode
 from trac.util.translation import _
@@ -307,7 +307,8 @@ class RecentChangesMacro(WikiMacroBase):
         for name, version, ts in cursor:
             if not 'WIKI_VIEW' in formatter.perm('wiki', name, version):
                 continue
-            date = format_date(from_utimestamp(ts))
+            req = formatter.req
+            date = user_time(req, format_date, from_utimestamp(ts))
             if date != prevdate:
                 prevdate = date
                 entries_per_date.append((date, []))

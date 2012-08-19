@@ -210,13 +210,35 @@ class BasicsAdminPanel(Component):
         if req.method == 'POST':
             for option in ('name', 'url', 'descr'):
                 self.config.set('project', option, req.args.get(option))
+
+            default_timezone = req.args.get('default_timezone')
+            if default_timezone not in all_timezones:
+                default_timezone = ''
+            self.config.set('trac', 'default_timezone', default_timezone)
+
+            default_language = req.args.get('default_language')
+            if default_language not in locales:
+                default_language = ''
+            self.config.set('trac', 'default_language', default_language)
+
+            default_date_format = req.args.get('default_date_format')
+            if default_date_format != 'iso8601':
+                default_date_format = ''
+            self.config.set('trac', 'default_date_format', default_date_format)
+
             _save_config(self.config, req, self.log)
             req.redirect(req.href.admin(cat, page))
 
+        default_timezone = self.config.get('trac', 'default_timezone')
+        default_language = self.config.get('trac', 'default_language')
+        default_date_format = self.config.get('trac', 'default_date_format')
+
         data = {
-            'name': self.env.project_name,
-            'description': self.env.project_description,
-            'url': self.env.project_url
+            'default_timezone': default_timezone,
+            'timezones': all_timezones,
+            'default_language': default_language.replace('-', '_'),
+            'languages': languages,
+            'default_date_format': default_date_format,
         }
         Chrome(self.env).add_textarea_grips(req)
         return 'admin_basics.html', {'project': data}

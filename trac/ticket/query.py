@@ -32,7 +32,7 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
-                              to_timestamp, to_utimestamp, utc
+                              to_timestamp, to_utimestamp, utc, user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
 from trac.util.translation import _, tag_
@@ -264,8 +264,13 @@ class Query(object):
         return cols
 
     def count(self, req=None, db=None, cached_ids=None, authname=None,
-              tzinfo=None):
-        sql, args = self.get_sql(req, cached_ids, authname, tzinfo)
+              tzinfo=None, locale=None):
+        """Get the number of matching tickets for the present query.
+
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
+        """
+        sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
         return self._count(sql, args)
 
     def _count(self, sql, args, db=None):
@@ -289,32 +294,35 @@ class Query(object):
         return cnt
 
     def execute(self, req=None, db=None, cached_ids=None, authname=None,
-                tzinfo=None, href=None):
+                tzinfo=None, href=None, locale=None):
+        """Retrieve the list of matching tickets.
+
+        :since 0.13: the `db` parameter is no longer needed and will be removed
+        in version 0.14
+        """
         if req is not None:
             href = req.href
-        if not db:
-            db = self.env.get_db_cnx()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        self.num_items = 0
-        sql, args = self.get_sql(req, cached_ids, authname, tzinfo)
-        self.num_items = self._count(sql, args, db)
+            self.num_items = 0
+            sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
+            self.num_items = self._count(sql, args)
 
-        if self.num_items <= self.max:
-            self.has_more_pages = False
+            if self.num_items <= self.max:
+                self.has_more_pages = False
 
-        if self.has_more_pages:
-            max = self.max
-            if self.group:
-                max += 1
-            sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
-            if (self.page > int(ceil(float(self.num_items) / self.max)) and
-                self.num_items != 0):
-                raise TracError(_('Page %(page)s is beyond the number of '
-                                  'pages in the query', page=self.page))
+            if self.has_more_pages:
+                max = self.max
+                if self.group:
+                    max += 1
+                sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
+                if (self.page > int(ceil(float(self.num_items) / self.max)) and
+                    self.num_items != 0):
+                    raise TracError(_("Page %(page)s is beyond the number of "
+                                      "pages in the query", page=self.page))
 
-        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
-        try:
+            # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
         except:
             db.rollback()
@@ -424,11 +432,13 @@ class Query(object):
         query_string = query_string.split('?', 1)[-1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None):
+    def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None,
+                locale=None):
         """Return a (sql, params) tuple for the query."""
         if req is not None:
             authname = req.authname
             tzinfo = req.tz
+            locale = req.locale
         self.get_columns()
         db = self.env.get_db_cnx()
 
@@ -478,7 +488,7 @@ class Query(object):
         def get_timestamp(date):
             if date:
                 try:
-                    return to_utimestamp(parse_date(date, tzinfo))
+                    return to_utimestamp(user_time(req, parse_date, date))
                 except TracError, e:
                     errors.append(unicode(e))
             return None
@@ -1169,7 +1179,8 @@ class QueryModule(Component):
                         value = Chrome(self.env).format_emails(context(ticket),
                                                                value)
                     elif col in query.time_fields:
-                        value = format_datetime(value, tzinfo=req.tz)
+                        value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
+                                                tzinfo=req.tz)
                     values.append(unicode(value).encode('utf-8'))
                 writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)

@@ -24,8 +24,7 @@ from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
-from trac.util.datefmt import format_datetime
-from trac.util.html import find_element
+from trac.util.datefmt import format_datetime, user_time
 from trac.util.presentation import Paginator
 from trac.util.text import quote_query_string
 from trac.util.translation import _
@@ -218,7 +217,7 @@ class SearchModule(Component):
         results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
         for idx, result in enumerate(results):
             results[idx] = {'href': result[0], 'title': result[1],
-                            'date': format_datetime(result[2]),
+                            'date': user_time(req, format_datetime, result[2]),
                             'author': result[3], 'excerpt': result[4]}
 
         pagedata = []    
