@@ -15,21 +15,20 @@
   </div>
 
   <py:match path="body" once="true" buffer="false"><body>
-    <div id="banner">
-      <div id="header" py:choose="">
-        <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link or href.wiki('TracIni')+'#header_logo-section'}"><img
-          src="${chrome.logo.src}" alt="${chrome.logo.alt}"
-          height="${chrome.logo.height or None}" width="${chrome.logo.width or None}" /></a>
-        <h1 py:otherwise=""><a href="${chrome.logo.link}">${project.name}</a></h1>
-      </div>
+    <div id="header" py:choose="">
+      <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link or href.wiki('TracIni')+'#header_logo-section'}"><img
+        src="${chrome.logo.src}" alt="${chrome.logo.alt}"
+        height="${chrome.logo.height or None}" width="${chrome.logo.width or None}" /></a>
+      <h1 py:otherwise=""><a href="${chrome.logo.link}">${project.name}</a></h1>
+      <div id="team">Team: X X X X X <a href="${chrome.logo.link}/team">and 5 more...</a></div>
+      ${navigation('metanav')}
       <form id="search" action="${href.search()}" method="get">
-        <div py:if="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm">
+        <span py:if="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm">
           <label for="proj-search">Search:</label>
           <input type="text" id="proj-search" name="q" size="18" accesskey="f" value="" />
           <input type="submit" value="${_('Search')}" />
-        </div>
+        </span>
       </form>
-      ${navigation('metanav')}
     </div>
     ${navigation('mainnav')}
 
