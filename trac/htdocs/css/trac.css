@@ -192,17 +192,40 @@ input[type=submit].trac-delete:hover {
 #header :link:hover, #header :visited:hover { text-decoration: underline }
 #logo { float: left; border: none; margin-top: -8px; padding: 0 }
 #logo img { padding-right: 0.75em; background-color: #fff }
-#team { float: left; width: 25%; line-height: 32px; margin: 0 .75em; padding: 0 .75em; outline: 1px solid #bb0000 }
+#team { float: left; width: 25%; line-height: 32px; margin: 0; padding: 0 .75em; outline: 1px solid #bb0000 }
 
 /* Quick search */
 #search {
  float: right;
+ width: 320px;
+ height: 30px;
  margin: 0 .75em;
- padding: 0 .75em;
- width: 35%;
+ border: 1px solid #bb0000;
+ background-color: #fff;
 }
-#search input[type="text"] { margin: 2px 0; padding: 0; border: 0; width: 75%; height: 28px }
+#search input[type="text"] {
+ width: 275px;
+ height: 30px;
+ margin: 0;
+ padding: 0;
+ line-height: 30px;
+ border: none;
+ vertical-align: top;
+ font-size: 1em;
+ color: #bababa
+}
+#search input[type=text]:focus { color: #000 }
 #search label { display: none }
+#search button {
+ display: block;
+ float: right;
+ width: 32px;
+ height: 32px;
+ margin: -2px 2px 0;
+ padding: 0;
+ border: none;
+ background-color: transparent
+}
 
 /* Navigation */
 .nav h2, .nav hr { display: none }

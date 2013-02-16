@@ -25,8 +25,8 @@
       <form id="search" action="${href.search()}" method="get">
         <span py:if="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm">
           <label for="proj-search">Search:</label>
-          <input type="text" id="proj-search" name="q" size="18" accesskey="f" value="" />
-          <input type="submit" value="${_('Search')}" />
+          <input type="text" id="proj-search" name="q" size="18" accesskey="f" value="${_('Search project...')}" onfocus="if(this.value == '${_('Search project...')}') { this.value = ''; }" />
+          <button type="submit"><img src="${chrome.htdocs_location}quicksearch.png" alt="${_('Search')}" /></button>
         </span>
       </form>
     </div>
