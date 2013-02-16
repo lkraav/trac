@@ -225,6 +225,7 @@ input[type=submit].trac-delete:hover {
 #metanav {
  padding-top: .3em;
 }
+#metanav img.gravatar { width: 32px; height: 32px; padding-right: .75em; vertical-align: top }
 
 /* Main navigation bar */
 #mainnav {

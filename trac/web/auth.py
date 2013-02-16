@@ -80,6 +80,10 @@ class LoginModule(Component):
         base path of several Trac instances if you want them to share
         the cookie.  (''since 0.12'')""")
 
+    get_gravatar = BoolOption('trac', 'get_gravatar', 'false',
+         """Use gravatar.com for fetching your user profile icon
+         (''since 1.0'').""")
+
     # IAuthenticator methods
 
     def authenticate(self, req):
@@ -104,14 +108,22 @@ class LoginModule(Component):
         return 'login'
 
     def get_navigation_items(self, req):
+        email = req.session.get('email', None)
+        gravatar = None
+
+        if self.get_gravatar:
+            if email:
+                gravatar = tag.img(class_='gravatar', src='http://www.gravatar.com/avatar/' + md5(email).hexdigest() + '?s=32', alt='Gravatar')
+            else:
+                gravatar = tag.img(class_='gravatar', src=req.chrome['htdocs_location'] + 'gravatar-mystery-man.png.jpg', alt='Gravatar')
+
         if req.authname and req.authname != 'anonymous':
-            yield ('metanav', 'login', _('logged in as %(user)s',
-                                         user=req.authname))
+            yield ('metanav', 'login', (gravatar or _('logged in as ')) + req.authname)
             yield ('metanav', 'logout',
                    tag.a(_('Logout'), href=req.href.logout()))
         else:
             yield ('metanav', 'login',
-                   tag.a(_('Login'), href=req.href.login()))
+                   (gravatar or tag.None) + tag.a(_('Login'), href=req.href.login()))
 
     # IRequestHandler methods
 
